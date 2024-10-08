@@ -4,6 +4,8 @@ import {DUMMY_TASKS} from "./dummy-tasks"
 import {TaskComponent} from "../task/task.component";
 import {NgForOf, NgIf} from "@angular/common";
 import {TaskCreatorComponent} from "../task-creator/task-creator.component";
+import {NewTaskData, TaskItem} from "../task/task.model";
+import {TaskService} from "./task.service";
 
 @Component({
   selector: 'app-tasks',
@@ -18,22 +20,19 @@ import {TaskCreatorComponent} from "../task-creator/task-creator.component";
   styleUrl: './tasks.component.css'
 })
 export class TasksComponent {
-  users = DUMMY_USERS;
   @Input({required:true}) name!: string;
   @Input({required:true}) id!: string;
-  tasks = DUMMY_TASKS;
   isAddingTask = false;
+  private taskService: TaskService;
+  constructor(taskService: TaskService) {
+    this.taskService = taskService;
+  }
 
   get selectedUserTask() {
-    return this.tasks.filter(task=>task.userId === this.id);
+    return this.taskService.getSelectedUserTask(this.id);
   }
 
-  onCompleteTask(id:string) {
-    this.tasks = this.tasks.filter(task=>task.id !== id)
-    console.log('Task completed', id);
-  }
-
-  onAddTask() {
-    this.isAddingTask = true;
+  taskHandler(value: boolean) {
+    this.isAddingTask = this.taskService.taskHandler(value);
   }
 }

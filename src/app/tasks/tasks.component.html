@@ -3,18 +3,19 @@
     <h2>{{ name }}'s Tasks</h2>
   </header>
   <menu>
-    <button (click)="onAddTask()">Add task</button>
+    <button (click)="taskHandler(true)">Add task</button>
   </menu>
   <ul>
     <li *ngFor="let task of selectedUserTask">
       <app-task
         [userTask]="task"
-        (complete)="onCompleteTask($event)"
+        [idTask]="id"
       />
     </li>
   </ul>
   <app-task-creator
-    *ngIf="isAddingTask",
-    (cancel)=""
+    *ngIf="isAddingTask"
+    (close)="taskHandler($event)"
+    [userId]="id"
   />
 </section>

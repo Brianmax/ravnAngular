@@ -1,5 +1,6 @@
 import {Component, EventEmitter, Input, Output} from '@angular/core';
 import {TaskItem} from "./task.model";
+import {TaskService} from "../tasks/task.service";
 
 
 @Component({
@@ -11,9 +12,14 @@ import {TaskItem} from "./task.model";
 })
 export class TaskComponent {
   @Input({required:true}) userTask!: TaskItem;
-  @Output() complete = new EventEmitter<string>();
+  @Input({required:true}) idTask!: string;
+  taskService: TaskService;
 
-  onComplete() {
-    this.complete.emit(this.userTask.id);
+  constructor(taskService: TaskService) {
+    this.taskService = taskService;
+  }
+  onComplete(id: string) {
+    this.taskService.removeTask(id);
+    console.log('Task completed', id);
   }
 }

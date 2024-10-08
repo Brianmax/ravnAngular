@@ -1,22 +1,36 @@
-import {Component, EventEmitter, Output} from '@angular/core';
-import {TaskItem} from "../task/task.model";
+import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {NewTaskData, TaskItem} from "../task/task.model";
+import {TaskComponent} from "../task/task.component";
+import {TaskService} from "../tasks/task.service";
 
 @Component({
   selector: 'app-task-creator',
   standalone: true,
-  imports: [],
+  imports: [ReactiveFormsModule, FormsModule],
   templateUrl: './task-creator.component.html',
   styleUrl: './task-creator.component.css'
 })
 export class TaskCreatorComponent {
-  @Output() createTask = new EventEmitter<TaskItem>;
-  @Output() cancel = new EventEmitter<boolean>();
-  onCrateTask() {
-    this.createTask.emit(
-    );
+  @Output() close = new EventEmitter<boolean>();
+  @Input({required:true}) userId!: string;
+  enteredTitle = '';
+  enteredSummary = '';
+  enteredDueDate = '';
+  taskService: TaskService;
+  constructor(taskService: TaskService) {
+    this.taskService = taskService;
   }
 
+  onSubmit() {
+     this.taskService.createTask({
+      title: this.enteredTitle,
+      summary: this.enteredSummary,
+      dueDate: this.enteredDueDate
+     }, this.userId);
+     this.close.emit(false)
+  }
   onCancel() {
-    this.cancel.emit(false);
+    this.close.emit(false);
   }
 }
